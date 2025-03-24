@@ -1,0 +1,80 @@
+class Course:
+    def __init__(self, code, title, description, capacity, schedule):
+        self.code = code
+        self.title = title
+        self.description = description
+        self.capacity = capacity
+        self.schedule = schedule
+        self.registered_students = []
+    
+    def register_student(self, student_id):
+        if len(self.registered_students) < self.capacity:
+            self.registered_students.append(student_id)
+            print(f"Student {student_id} registered for {self.title}.")
+        else:
+            print("Course is full. Registration failed.")
+    
+    def remove_student(self, student_id):
+        if student_id in self.registered_students:
+            self.registered_students.remove(student_id)
+            print(f"Student {student_id} dropped from {self.title}.")
+        else:
+            print("Student is not registered in this course.")
+    
+    def available_slots(self):
+        return self.capacity - len(self.registered_students)
+
+    def display_info(self):
+        print(f"Course Code: {self.code}")
+        print(f"Title: {self.title}")
+        print(f"Description: {self.description}")
+        print(f"Capacity: {self.capacity}")
+        print(f"Schedule: {self.schedule}")
+        print(f"Available Slots: {self.available_slots()}\n")
+
+class Student:
+    def __init__(self, student_id, name):
+        self.student_id = student_id
+        self.name = name
+        self.registered_courses = []
+    
+    def register_course(self, course):
+        if course.code not in self.registered_courses:
+            course.register_student(self.student_id)
+            self.registered_courses.append(course.code)
+        else:
+            print("You are already registered for this course.")
+    
+    def drop_course(self, course):
+        if course.code in self.registered_courses:
+            course.remove_student(self.student_id)
+            self.registered_courses.remove(course.code)
+        else:
+            print("You are not registered in this course.")
+    
+    def display_registered_courses(self):
+        print(f"Student {self.name} (ID: {self.student_id}) is registered in: {', '.join(self.registered_courses) if self.registered_courses else 'No courses registered.'}\n")
+
+if __name__ == "__main__":
+    courses = [
+        Course("CS101", "Introduction to Computer Science", "Basic programming concepts", 2, "Mon-Wed 10AM"),
+        Course("MATH201", "Calculus I", "Differentiation and Integration", 3, "Tue-Thu 2PM"),
+    ]
+    
+    student1 = Student("S001", "Alice")
+    student2 = Student("S002", "Bob")
+    
+    print("Available Courses:\n")
+    for course in courses:
+        course.display_info()
+    
+    student1.register_course(courses[0])
+    student1.register_course(courses[1])
+    student2.register_course(courses[0])
+    student2.register_course(courses[1])
+    
+    student1.display_registered_courses()
+    student2.display_registered_courses()
+    
+    student1.drop_course(courses[0])
+    student1.display_registered_courses()
